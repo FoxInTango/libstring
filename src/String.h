@@ -22,7 +22,6 @@ public:
     String(const float& number);
     String(const long& number);
     String(const double& number);
-    String();
     virtual ~String();
 public:
     operator char();
