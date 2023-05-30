@@ -33,8 +33,12 @@ public:
     operator float();
     operator long();
     operator double();
+
+    bool operator ==(const char* bytes);
+    bool operator ==(const String& string);
 public:
-    const char* byte();
+    const char* byte() const;
+    Size length() const ;
 };
 namespaceEnd
 #endif // !_EVENT_TARGET_H_
