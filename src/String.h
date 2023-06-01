@@ -36,6 +36,20 @@ public:
 
     bool operator ==(const char* bytes);
     bool operator ==(const String& string);
+
+    bool operator ==(const char& v);
+    bool operator ==(const unsigned char& v);
+    bool operator ==(const short& v);
+    bool operator ==(const unsigned short& v);
+    bool operator ==(const int& v);
+    bool operator ==(const unsigned int& v);
+    bool operator ==(const float& v);
+    bool operator ==(const long& v);
+    bool operator ==(const double& v);
+
+    String& operator +=(const String& s);
+    Array<String> split(char* spliter,int);
+    String& contact(const String& s);
 public:
     const char* byte() const;
     Size length() const ;
