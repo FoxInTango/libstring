@@ -9,7 +9,11 @@
 
 namespaceBegin(foxintango)
 
+typedef wchar_t Unicode;
+
 class foxintangoAPI String {
+protected:
+    Unicode* content;
 public:
     String();
     String(const char* string);
@@ -46,12 +50,14 @@ public:
     bool operator ==(const float& v);
     bool operator ==(const long& v);
     bool operator ==(const double& v);
-
     String& operator +=(const String& s);
-    Array<String> split(char* spliter,int);
+
+    Size as(char** string);
+
     String& contact(const String& s);
+    Size split(Array<String>& array,char* spliter, const int& max);
 public:
-    const char* byte() const;
+    const Unicode* unicode() const;
     Size length() const ;
 };
 namespaceEnd
