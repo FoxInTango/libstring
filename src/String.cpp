@@ -6,6 +6,8 @@ using namespace foxintango;
 
 /**
  * 赋值运算符 与 拷贝运算符
+ * 
+ * 数值的科学计数法
  */
 template <typename T>
 Size string_length(T* s) {
@@ -72,7 +74,7 @@ inline Size utf8_length_from_unicode(const Unicode* content){
     Size  length = 0;
     while (content[index])
     {
-        Index segment = utf32[index] < 0x0000007F ? 1 : (utf32[index] < 0x000007FF ? 2 : (utf32[index] < 0x0000FFFF ? 3 : 4));
+        Index segment = content[index] < 0x0000007F ? 1 : (content[index] < 0x000007FF ? 2 : (content[index] < 0x0000FFFF ? 3 : 4));
 
         switch (segment) {
         case 1: { length += 1; }break;//0000 0000 - 0000 007F    0xxxxxxx
@@ -119,7 +121,7 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
             u2 = static_cast<Unicode>(utf8[index8 + 1]);
             u3 = static_cast<Unicode>(utf8[index8 + 2]);
             u4 = static_cast<Unicode>(utf8[index8 + 3]); //0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-            (*utf32)[index16] = ((u1 << 2) >> 2 | (u2 << 6)) | ((((u2 << 2) >> 2) | (u3 << 6)) << 8) | (((u3 << 2) >> 2) | (u3 << 6)) << 16) | (((u4 << 5) >> 5) << 24)
+            (*utf32)[index32] = ((u1 << 2) >> 2 | (u2 << 6)) | ((((u2 << 2) >> 2) | (u3 << 6)) << 8) | (((u3 << 2) >> 2) | (u3 << 6)) << 16) | (((u4 << 5) >> 5) << 24)
             index8 += 4; }break;
         default:break;
         }
@@ -130,7 +132,7 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
     return length;
 }
 
-inline Size utf_32_8(Unicode* utf32, const char** utf8){
+inline Size utf_32_8(const Unicode* utf32,char** utf8){
     Size l = utf8_length_from_unicode(utf32);
     (*utf8) = new char[l + 1];
     (*utf8)[l] = 0;
