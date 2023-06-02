@@ -121,7 +121,7 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
             u2 = static_cast<Unicode>(utf8[index8 + 1]);
             u3 = static_cast<Unicode>(utf8[index8 + 2]);
             u4 = static_cast<Unicode>(utf8[index8 + 3]); //0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-            (*utf32)[index32] = ((u1 << 2) >> 2 | (u2 << 6)) | ((((u2 << 2) >> 2) | (u3 << 6)) << 8) | (((u3 << 2) >> 2) | (u3 << 6)) << 16) | (((u4 << 5) >> 5) << 24)
+            (*utf32)[index32] = ((u1 << 2) >> 2 | (u2 << 6)) | ((((u2 << 2) >> 2) | (u3 << 6)) << 8) | (((u3 << 2) >> 2) | (u3 << 6)) << 16) | (((u4 << 5) >> 5) << 24);
             index8 += 4; }break;
         default:break;
         }
@@ -140,7 +140,7 @@ inline Size utf_32_8(const Unicode* utf32,char** utf8){
     Index index32 = 0;
     while(utf32[index32]){
         Index segment = utf32[index32]  < 0x0000007F ? 1 : ( utf32[index32] < 0x000007FF ? 2 : (utf32[index32] < 0x0000FFFF ? 3 : 4));
-        char* p = static_cast<char*>(&utf32[index32]);
+        char* p = (char*)&utf32[index32];
         p[0] = p[1] = p[2] = p[3] = 0;
         char c1 = p[0];
         char c2 = p[1];
