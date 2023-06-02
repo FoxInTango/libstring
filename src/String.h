@@ -56,7 +56,7 @@ public:
     bool operator ==(const double& v);
     String& operator +=(const String& s);
 
-    Size as(char** string);
+    Size as(char** string) const;
 
     String& contact(const String& s);
     Size split(Array<String>& array,char* spliter, const int& max);

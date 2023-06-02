@@ -283,7 +283,7 @@ String& String::operator += (const String& s){
     return *this;
 }
 
-Size String::as(char** string){
+Size String::as(char** string) const {
     return content ? utf_32_8(this->content,string) : 0;
 }
 
