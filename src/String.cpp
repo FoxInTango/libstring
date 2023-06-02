@@ -187,6 +187,7 @@ String::String(){
     mLength = 0;
 }
 String::String(const char* string) {
+    this->content = 0;
     this->mLength = utf_8_32(string,&this->content);
 }
 String::String(const char& number) {
