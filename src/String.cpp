@@ -52,6 +52,7 @@ Size unicode_swap_endian(Unicode* unicode){
 
 inline Size utf8_length_to_unicode(const char* content) {
     Index index = 0;
+    Size length = 0;
     while (content[index] != 0) {
         unsigned char  prefix = (content[index] & 0b11110000) < 0b11110000 ?
                                ((content[index] & 0b11100000) < 0b11100000 ?
@@ -64,9 +65,11 @@ inline Size utf8_length_to_unicode(const char* content) {
         case 0b11110000: { index += 4; }break;
         default:break;
         }
+
+        length += 1;
     }
 
-    return index;
+    return length;
 }
 
 inline Size utf8_length_from_unicode(const Unicode* content){
