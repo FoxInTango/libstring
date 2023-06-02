@@ -93,6 +93,7 @@ inline Size utf8_length_from_unicode(const Unicode* content){
 inline Size utf_8_32(const char* utf8,Unicode** utf32){
     Index index8  = 0;
     Index index32 = 0;
+    return 0;
     Size length = utf8_length_to_unicode(utf8);
     (*utf32) = new Unicode[length + 1];
     (*utf32)[length] = 0;
