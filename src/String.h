@@ -28,6 +28,9 @@ public:
     String(const double& number);
     virtual ~String();
 public:
+    String(const String& string);
+    String& operator = (const String& string);
+public:
     operator char();
     operator unsigned char();
     operator short();

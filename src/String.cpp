@@ -4,9 +4,56 @@ using namespace foxintango;
 #include <string>
 #include <iostream>
 
+/**  UTF-8, a transformation format of ISO 10646
+ * https://www.ietf.org/rfc/rfc3629.txt  
+ */
+
 /**
  * 赋值运算符 与 拷贝运算符
  */
+template <typename T>
+inline Size string_length() { return 0; }
+template <typename T>
+inline Size string_copy(){
+    return 0;
+}
+
+template <typename T>
+inline Size string_compare(){ return 0; }
+
+/** UNICODE -- UTF8
+ *  0000 0000-0000 007F    0xxxxxxx
+ *  0000 0080-0000 07FF    110xxxxx 10xxxxxx
+ *  0000 0800-0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
+ *  0001 0000-0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+ */
+
+
+inline Size utf_8_16(){ return 0; }
+inline Size utf_8_32(){ return 0; }
+inline Size utf_16_8(){ return 0; }
+inline Size utf_32_8(){ return 0; }
+
+inline Size utf8_length(const char* content){
+    Index index = 0;
+    while(content[index] != 0){
+        char prefix = ( content[index] & 0b11110000) < 0b11110000 ? 
+                      ((content[index] & 0b11100000) < 0b11100000 ? 
+                      ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000:0b11000000):0b11100000) : 0b11110000;
+
+        switch(prefix){
+        case 0b00000000:{ index += 1; }break;
+        case 0b11000000:{ index += 2; }break;
+        case 0b11100000:{ index += 3; }break;
+        case 0b11110000:{ index += 4; }break;
+        default:break;
+        }
+    }
+
+    return index;
+}
+
+#define UNICODE_SIZE sizeof(wchar_t)
 
 String::String(){
     content = 0;
