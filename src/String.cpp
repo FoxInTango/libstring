@@ -239,7 +239,7 @@ Size String::split(Array<String>& array,char* spliter,const int& max){
     }
 }
 
-const Unicode* String::byte() const { return this->content; }
+const Unicode* String::unicode() const { return this->content; }
 
 Size String::length() const { 
     if(content){
