@@ -1,8 +1,12 @@
 #include "String.h"
 using namespace foxintango;
+#include <fstream>
 #include <codecvt>
-#include <string>
 #include <iostream>
+#include <string>
+#include <cstring>
+#include <cassert>
+#include <locale>
 
 /**  UTF-8, a transformation format of ISO 10646
  * https://www.ietf.org/rfc/rfc3629.txt  
