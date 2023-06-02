@@ -121,7 +121,7 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
             u2 = static_cast<Unicode>(utf8[index8 + 1]);
             u3 = static_cast<Unicode>(utf8[index8 + 2]);
             u4 = static_cast<Unicode>(utf8[index8 + 3]); //0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-            (*utf32)[index32] = ((u1 << 2) >> 2 | (u2 << 6)) | ((((u2 << 2) >> 2) | (u3 << 6)) << 8) | (((u3 << 2) >> 2) | (u3 << 6)) << 16) | (((u4 << 5) >> 5) << 24);
+            (*utf32)[index32] = ((u1 << 2) >> 2 | (u2 << 6)) | ((((u2 << 2) >> 2) | (u3 << 6)) << 8) | ((((u3 << 2) >> 2) | (u3 << 6)) << 16) | (((u4 << 5) >> 5) << 24);
             index8 += 4; }break;
         default:break;
         }
