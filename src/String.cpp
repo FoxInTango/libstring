@@ -95,7 +95,7 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
     Index index32 = 0;
 
     Size length = utf8_length_to_unicode(utf8);
-    return 0;
+    return length;
     (*utf32) = new Unicode[length + 1];
     (*utf32)[length] = 0;
     
@@ -107,11 +107,13 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
         switch(prefix){
         case 0b00000000: { 
             u1 = static_cast<Unicode>(utf8[index8]); //0000 0000 - 0000 007F    0xxxxxxx
-            (*utf32)[index32] =  u1; }break;
+            (*utf32)[index32] =  u1; 
+            index8 += 1;}break;
         case 0b11000000: { 
             u1 = static_cast<Unicode>(utf8[index8]);
             u2 = static_cast<Unicode>(utf8[index8 + 1]);// 0000 0080-0000 07FF    110xxxxx 10xxxxxx
-            (*utf32)[index32] = ((u1 << 2) >> 2  | ( u2 << 6 )) | ( ((u2 << 3) >> 3) << 8 );index8 += 2; }break;
+            (*utf32)[index32] = ((u1 << 2) >> 2  | ( u2 << 6 )) | ( ((u2 << 3) >> 3) << 8 );
+            index8 += 2; }break;
         case 0b11100000: { 
             u1 = static_cast<Unicode>(utf8[index8]);
             u2 = static_cast<Unicode>(utf8[index8 + 1]);
