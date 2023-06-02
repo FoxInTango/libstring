@@ -53,9 +53,9 @@ Size unicode_swap_endian(Unicode* unicode){
 inline Size utf8_length_to_unicode(const char* content) {
     Index index = 0;
     while (content[index] != 0) {
-        char prefix = (content[index] & 0b11110000) < 0b11110000 ?
-                     ((content[index] & 0b11100000) < 0b11100000 ?
-                     ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
+        unsigned char  prefix = (content[index] & 0b11110000) < 0b11110000 ?
+                               ((content[index] & 0b11100000) < 0b11100000 ?
+                               ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
 
         switch (prefix) {
         case 0b00000000: { index += 1; }break;
@@ -100,10 +100,9 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
     (*utf32)[length] = 0;
     
     while(utf8[index8]){
-        char prefix =  (utf8[index8] & 0b11110000) < 0b11110000 ?
-                      ((utf8[index8] & 0b11100000) < 0b11100000 ?
-                      ((utf8[index8] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
-        prefix = 0b00000000;
+        unsigned char prefix =  (utf8[index8] & 0b11110000) < 0b11110000 ?
+                               ((utf8[index8] & 0b11100000) < 0b11100000 ?
+                               ((utf8[index8] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
         Unicode u1 = 0,u2 = 0,u3 = 0,u4 = 0;
         switch(prefix){
         case 0b00000000: { 
