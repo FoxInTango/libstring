@@ -9,10 +9,11 @@
 
 namespaceBegin(foxintango)
 
-typedef wchar_t Unicode;
+typedef char32_t Unicode;
 
 class foxintangoAPI String {
 protected:
+    Size mLength;// 检查length赋值情况
     Unicode* content;
 public:
     String();
