@@ -118,8 +118,8 @@ inline Size utf_8_32(const unsigned char* utf8,Unicode** utf32){
     
     (*utf32) = new Unicode[length + 1];
     (*utf32)[length] = 0;
-    
-    while(utf8[index8]){
+    Error error = 0;
+    while(utf8[index8] && !error){
         unsigned char prefix = 255;/* (utf8[index8] & 0b11110000) < 0b11110000 ?
                                ((utf8[index8] & 0b11100000) < 0b11100000 ?
                                ((utf8[index8] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;*/
@@ -148,7 +148,7 @@ inline Size utf_8_32(const unsigned char* utf8,Unicode** utf32){
             u4 = static_cast<Unicode>(utf8[index8 + 3]); //0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
             (*utf32)[index32] = ((u1 << 2) >> 2 | (u2 << 6)) | ((((u2 << 2) >> 2) | (u3 << 6)) << 8) | ((((u3 << 2) >> 2) | (u3 << 6)) << 16) | (((u4 << 5) >> 5) << 24);
             index8 += 4; }break;
-        default:break;
+        default:{error = 1;}break;
         }
 
         index32 += 1;
