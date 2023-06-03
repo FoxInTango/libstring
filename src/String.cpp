@@ -129,7 +129,7 @@ inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
     (*utf32)[length] = 0;
     
     while (utf8[index8]) {
-        unsigned char* unicode = &((*utf32)[index32]);
+        unsigned char* unicode = (unsigned char*)&((*utf32)[index32]);
         if (utf8[index8] < 0b10000000) {
             unicode[0] =  utf8[index8];
             index8++;
