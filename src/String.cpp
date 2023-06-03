@@ -23,7 +23,7 @@ Size string_copy(T* t,T* s,const Size& length = 0){
     if(!t || !s) return 0;
     Index index = 0;
     Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
-    while(index < length && s[index] != 0){
+    while(index < l && s[index] != 0){
         t[index] = s[index];
     }
     return 0;
@@ -32,7 +32,8 @@ Size string_copy(T* t,T* s,const Size& length = 0){
 template <typename T>
 bool string_compare(T* t, T* s, const Size& length = 0){
     Index index = 0;
-    while(s[index] && t[index] && index < length){
+    Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
+    while(s[index] && t[index] && index < l){
         if(s[index] != t[index]) return false;
     }
 
@@ -47,17 +48,32 @@ Size unicode_swap_endian(Unicode* unicode){
  *  0000 0000-0000 007F    0xxxxxxx
  *  0000 0080-0000 07FF    110xxxxx 10xxxxxx
  *  0000 0800-0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
- *  0001 0000-0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+ *  0001 0000-0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx 11110xxx ** 10xxxxxx 10xxxxxx 10xxxxxx ** 1110xxxx 10xxxxxx 10xxxxxx
  */
+
+inline Error utf8_prefix(const char* content,unsigned char& prefix){
+    Index o = 0;
+    while(content[o] <= 0b11000000 && content[o] && o < 4){
+        if(content[o] < 0b10000000) break;
+        o ++;
+    }
+
+     switch(o){
+     case 1:{ if(content[o] >= 0b11000000 && content[o] < 0b11100000) prefix = 0b11000000; }break;
+     case 2:{ if(content[o] >= 0b11100000 && content[o] < 0b11110000) prefix = 0b11100000; }break;
+     case 3:{ if(content[o] >= 0b11110000) prefix = 0b11110000; }break;
+     default:break;//报错
+     }
+ }
 
 inline Size utf8_length_to_unicode(const char* content) {
     Index index = 0;
     Size length = 0;
     while (content[index] != 0) {
-        unsigned char  prefix = (content[index] & 0b11110000) < 0b11110000 ?
+        unsigned char  prefix = 255;/*(content[index] & 0b11110000) < 0b11110000 ?
                                ((content[index] & 0b11100000) < 0b11100000 ?
-                               ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
-
+                               ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;*/
+        utf8_prefix(&content[index],prefix);
         switch (prefix) {
         case 0b00000000: { index += 1; }break;
         case 0b11000000: { index += 2; }break;
@@ -103,9 +119,10 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
     (*utf32)[length] = 0;
     
     while(utf8[index8]){
-        unsigned char prefix =  (utf8[index8] & 0b11110000) < 0b11110000 ?
+        unsigned char prefix = 255;/* (utf8[index8] & 0b11110000) < 0b11110000 ?
                                ((utf8[index8] & 0b11100000) < 0b11100000 ?
-                               ((utf8[index8] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
+                               ((utf8[index8] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;*/
+        utf8_prefix(&utf8[index8], prefix);
         Unicode u1 = 0,u2 = 0,u3 = 0,u4 = 0;
         switch(prefix){
         case 0b00000000: { 
@@ -148,7 +165,7 @@ inline Size utf_32_8(const Unicode* utf32,char** utf8){
     while(utf32[index32]){
         Index segment = utf32[index32]  < 0x0000007F ? 1 : ( utf32[index32] < 0x000007FF ? 2 : (utf32[index32] < 0x0000FFFF ? 3 : 4));
         char* p = (char*)&utf32[index32];
-        p[0] = p[1] = p[2] = p[3] = 0;
+        p[0] = p[1] = p[2] = p[3] = 0; // shit
         char c1 = p[0];
         char c2 = p[1];
         char c3 = p[2];
@@ -164,14 +181,14 @@ inline Size utf_32_8(const Unicode* utf32,char** utf8){
         }break;// 0000 0080 - 0000 07FF    110xxxxx 10xxxxxx
         case 3:{
             (*utf8)[index8]     = ((c1 << 2) >> 2) | 0b10000000;
-            (*utf8)[index8 + 1] = (((c2 << 2) >> 2) << 2) | (c1 >> 6) | 0b10000000;
+            (*utf8)[index8 + 1] = (((c2 << 2) >> 2) << 2) | (c1 >> 6) | 0b10000000; // shit
             (*utf8)[index8 + 2] = (((c3 << 4) >> 4) << 2) | (c2 >> 6) | 0b11100000;
             index8 += 3;
         }break;// 0000 0800 - 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
         case 4:{
             (*utf8)[index8] = ((c1 << 2) >> 2) | 0b10000000;
-            (*utf8)[index8 + 1] = (((c2 << 2) >> 2) << 2) | (c1 >> 6) | 0b10000000;
-            (*utf8)[index8 + 2] = (((c3 << 2) >> 2) << 2) | (c2 >> 6) | 0b10000000;
+            (*utf8)[index8 + 1] = (((c2 << 2) >> 2) << 2) | (c1 >> 6) | 0b10000000;// shit
+            (*utf8)[index8 + 2] = (((c3 << 2) >> 2) << 2) | (c2 >> 6) | 0b10000000;//shit
             (*utf8)[index8 + 3] = (((c4 << 5) >> 5) << 2) | (c3 >> 6) | 0b11110000; 
         }break;// 0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
         default:break;
