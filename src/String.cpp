@@ -158,7 +158,7 @@ inline Size utf_8_32(const unsigned char* utf8,Unicode** utf32){
 
 inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
     Size l = utf8_length_from_unicode(utf32);
-    (*utf8) = new char[l + 1];
+    (*utf8) = new unsigned char[l + 1];
     (*utf8)[l] = 0;
     Index index8  = 0;
     Index index32 = 0;
@@ -208,7 +208,7 @@ String::String(){
 }
 String::String(const char* string) {
     this->content = 0;
-    this->mLength = utf_8_32(string,(unsigned char*)&this->content);
+    this->mLength = utf_8_32((unsigned char*)string,&this->content);
 }
 String::String(const char& number) {
     
@@ -278,7 +278,7 @@ String::operator double() { return 0; }
 bool String::operator == (const char* bytes){
     Unicode* unicode;
 
-    utf_8_32(bytes,&unicode);
+    utf_8_32((unsigned char*)bytes,&unicode);
 
     if(unicode){
         return string_compare<Unicode>(this->content,unicode);
@@ -309,7 +309,7 @@ String& String::operator += (const String& s){
 }
 
 Size String::as(char** string) const {
-    return content ? utf_32_8(this->content,string) : 0;
+    return content ? utf_32_8(this->content, (unsigned char**)string) : 0;
 }
 
 
