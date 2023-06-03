@@ -70,7 +70,8 @@ inline void utf8_prefix(const unsigned char* content, unsigned char& prefix) {
 inline Size utf8_length_to_unicode(const unsigned char* content) {
     Index index = 0;
     Size length = 0;
-    while (content[index] != 0) {
+    Error error = 0;
+    while (content[index] && !error) {
         unsigned char  prefix = 255;/*(content[index] & 0b11110000) < 0b11110000 ?
                                ((content[index] & 0b11100000) < 0b11100000 ?
                                ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;*/
@@ -80,7 +81,7 @@ inline Size utf8_length_to_unicode(const unsigned char* content) {
         case 0b11000000: { index += 2; }break;
         case 0b11100000: { index += 3; }break;
         case 0b11110000: { index += 4; }break;
-        default:break;
+        default:{error = 1;}break;
         }
 
         length += 1;
