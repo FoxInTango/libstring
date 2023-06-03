@@ -53,7 +53,7 @@ Size unicode_swap_endian(Unicode* unicode){
 
 inline Error utf8_prefix(const unsigned char* content,unsigned char& prefix){
     Index o = 0;
-    while ((content[o] <= 0b11000000) && content[o] && o < 4){
+    while ((content[o] < 0b11000000) && content[o] && o < 4){
         if(content[o] < 0b10000000) break;
         o ++;
     }
