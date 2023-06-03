@@ -51,20 +51,21 @@ Size unicode_swap_endian(Unicode* unicode){
  *  0001 0000-0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx 11110xxx ** 10xxxxxx 10xxxxxx 10xxxxxx ** 1110xxxx 10xxxxxx 10xxxxxx
  */
 
-inline Error utf8_prefix(const unsigned char* content,unsigned char& prefix){
+inline void utf8_prefix(const unsigned char* content, unsigned char& prefix) {
     Index o = 0;
-    while ((content[o] < 0b11000000) && content[o] && o < 4){
-        if(content[o] < 0b10000000) break;
-        o ++;
+    while ((content[o] < 0b11000000) && content[o] && o < 4) {
+        if (content[o] < 0b10000000) { break; }
+        o++;
     }
 
-     switch(o){
-     case 1:{ if(content[o] >= 0b11000000 && content[o] < 0b11100000) prefix = 0b11000000; }break;
-     case 2:{ if(content[o] >= 0b11100000 && content[o] < 0b11110000) prefix = 0b11100000; }break;
-     case 3:{ if(content[o] >= 0b11110000) prefix = 0b11110000; }break;
-     default:break;//报错
-     }
- }
+    switch (o) {
+    case 0: { prefix = 0b00000000; }
+    case 1: { if (content[o] >= 0b11000000 && content[o] < 0b11100000) prefix = 0b11000000; }break;
+    case 2: { if (content[o] >= 0b11100000 && content[o] < 0b11110000) prefix = 0b11100000; }break;
+    case 3: { if (content[o] >= 0b11110000) prefix = 0b11110000; }break;
+    default: {prefix = 0b11110001; }break;//报错
+    }
+}
 
 inline Size utf8_length_to_unicode(const unsigned char* content) {
     Index index = 0;
