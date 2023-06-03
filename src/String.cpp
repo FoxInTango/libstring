@@ -92,7 +92,7 @@ inline Size utf8_length_from_unicode(const Unicode* content){
             index ++;
         }else if(content[index] < 0b11100000){
             index += 2;
-        }else if(content[index] < ob11110000){
+        }else if(content[index] < 0b11110000){
             index += 3;
         }else { index += 4; }
     }
@@ -129,25 +129,25 @@ inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
     (*utf32)[length] = 0;
     
     while (utf8[index8]) {
-        unsigned char* unicode = (*utf32)[index32];
+        unsigned char* unicode = &((*utf32)[index32]);
         if (utf8[index8] < 0b10000000) {
             unicode[0] =  utf8[index8];
             index8++;
         }
-        else if (content[index8] < 0b11100000) {
+        else if (utf8[index8] < 0b11100000) {
             unicode[0] = (utf8[index8] << 3) | ((utf8[index8 + 1] << 2) >> 5);
             unicode[1] = (utf8[index8 + 1] << 5);
             index8 += 2; 
         }
-        else if (content[index8] < ob11110000) {
+        else if (utf8[index8] < 0b11110000) {
             unicode[0] = (utf8[index8] << 4) | ((utf8[index8 + 1] << 2) >> 4);
-            unicode[1] = ((utf8[index8 + 1] << 6) | ((utf8[index8 + 2] << 6);
+            unicode[1] = ((utf8[index8 + 1] << 6) | (utf8[index8 + 2] << 6);
             index8 += 3;
         }
         else { 
             unicode[0] = (utf8[index8] << 5) | ((utf8[index8 + 1] << 2) >> 3);
             unicode[1] = ((utf8[index8 + 1] << 2) >> 1) | ((utf8[index8 + 2] << 2) >> 7);
-            unicode[3] = (utf8[index8 + 2] << 3;
+            unicode[3] = (utf8[index8 + 2] << 3);
             index8 += 4;
          }
 
@@ -165,7 +165,7 @@ inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
     
     while(utf32[index32]){
         unsigned char* unicode = (unsigned char*)&utf32[index32];
-        unsigned char prefix = utf32[index32] < 0x0000007F ? 0b00000000 : (utf32[index32] < 0x000007FF ? 0b11000000 : (utf32[index32] < 0000 FFFF ? 0b11100000 :0b11110000));
+        unsigned char prefix = utf32[index32] < 0x0000007F ? 0b00000000 : (utf32[index32] < 0x000007FF ? 0b11000000 : (utf32[index32] < 0x0000FFFF ? 0b11100000 :0b11110000));
         switch (prefix) {
         case 0b00000000: {// 0000 0000 - 0000 007F    0xxxxxxx
             (*utf8)[index8] = unicode[0];
