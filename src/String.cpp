@@ -51,7 +51,7 @@ Size unicode_swap_endian(Unicode* unicode){
  *  0001 0000-0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx 11110xxx ** 10xxxxxx 10xxxxxx 10xxxxxx ** 1110xxxx 10xxxxxx 10xxxxxx
  */
 
-inline Error utf8_prefix(const char* content,unsigned char& prefix){
+inline Error utf8_prefix(const unsigned char* content,unsigned char& prefix){
     Index o = 0;
     while ((content[o] <= 0b11000000) && content[o] && o < 4){
         if(content[o] < 0b10000000) break;
@@ -66,7 +66,7 @@ inline Error utf8_prefix(const char* content,unsigned char& prefix){
      }
  }
 
-inline Size utf8_length_to_unicode(const char* content) {
+inline Size utf8_length_to_unicode(const unsigned char* content) {
     Index index = 0;
     Size length = 0;
     while (content[index] != 0) {
@@ -109,7 +109,7 @@ inline Size utf8_length_from_unicode(const Unicode* content){
     return length;
 }
 // little endian
-inline Size utf_8_32(const char* utf8,Unicode** utf32){
+inline Size utf_8_32(const unsigned char* utf8,Unicode** utf32){
     Index index8  = 0;
     Index index32 = 0;
 
@@ -156,7 +156,7 @@ inline Size utf_8_32(const char* utf8,Unicode** utf32){
     return length;
 }
 
-inline Size utf_32_8(const Unicode* utf32,char** utf8){
+inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
     Size l = utf8_length_from_unicode(utf32);
     (*utf8) = new char[l + 1];
     (*utf8)[l] = 0;
@@ -208,7 +208,7 @@ String::String(){
 }
 String::String(const char* string) {
     this->content = 0;
-    this->mLength = utf_8_32(string,&this->content);
+    this->mLength = utf_8_32(string,(unsigned char*)&this->content);
 }
 String::String(const char& number) {
     
