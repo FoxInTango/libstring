@@ -51,6 +51,25 @@ Size unicode_swap_endian(Unicode* unicode){
  *  0001 0000-0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx 11110xxx ** 10xxxxxx 10xxxxxx 10xxxxxx ** 1110xxxx 10xxxxxx 10xxxxxx
  */
 
+ /**  UTF8 编码排序方式 差异
+        endian byte 1 : 10000000
+        endian byte 2 : 11000000
+        endian byte 3 : 11100000
+        endian byte 4 : 11110000
+        unsigned int endian = 0b11110000111000001100000010000000;
+        unsigned char* ep = (unsigned char*)&endian;
+        std::cout << " endian byte 1 : " << std::bitset<8>(ep[0]) << std::endl;
+        std::cout << " endian byte 2 : " << std::bitset<8>(ep[1]) << std::endl;
+        std::cout << " endian byte 3 : " << std::bitset<8>(ep[2]) << std::endl;
+        std::cout << " endian byte 4 : " << std::bitset<8>(ep[3]) << std::endl;
+        unsigned char p = 255;
+        char utf[] = "这是一个悲伤的故事";
+
+        for (int i = 0; i < sizeof(utf); i++) {
+            std::cout << " code " << i << " : " << std::bitset<8>(utf[i]) << std::endl;
+        }
+*/
+
 inline void utf8_prefix(const unsigned char* content, unsigned char& prefix) {
     Index o = 0;
     while ((content[o] < 0b11000000) && content[o] && o < 4) {
@@ -66,15 +85,126 @@ inline void utf8_prefix(const unsigned char* content, unsigned char& prefix) {
     default: {prefix = 0b11110001; }break;//报错
     }
 }
+inline Size utf8_length_from_unicode(const Unicode* content){
+    Index index = 0;
+    while(content[index]){
+        if(content[index] < 0b10000000){
+            index ++;
+        }else if(content[index] < 0b11100000){
+            index += 2;
+        }else if(content[index] < ob11110000){
+            index += 3;
+        }else { index += 4; }
+    }
 
+    return index;
+}
+inline Size utf8_length_to_unicode(const unsigned char* content){
+    Index index = 0;
+    Size  length = 0;
+    while (content[index])
+    {
+        Index segment = content[index] < 0x0000007F ? 1 : (content[index] < 0x000007FF ? 2 : (content[index] < 0x0000FFFF ? 3 : 4));
+
+        switch (segment) {
+        case 1: { length += 1; }break;// 0000 0000 - 0000 007F    0xxxxxxx
+        case 2: { length += 2; }break;// 0000 0080 - 0000 07FF    110xxxxx 10xxxxxx
+        case 3: { length += 3; }break;// 0000 0800 - 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
+        case 4: { length += 4; }break;// 0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+        default:break;
+        }
+
+        index++;
+    }
+
+    return length;
+}
+inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
+    Index index8 = 0;
+    Index index32 = 0;
+
+    Size length = utf8_length_to_unicode(utf8);
+
+    (*utf32) = new Unicode[length + 1];
+    (*utf32)[length] = 0;
+    
+    while (utf8[index8]) {
+        unsigned char* unicode = (*utf32)[index32];
+        if (utf8[index8] < 0b10000000) {
+            unicode[0] =  utf8[index8];
+            index8++;
+        }
+        else if (content[index8] < 0b11100000) {
+            unicode[0] = (utf8[index8] << 3) | ((utf8[index8 + 1] << 2) >> 5);
+            unicode[1] = (utf8[index8 + 1] << 5);
+            index8 += 2; 
+        }
+        else if (content[index8] < ob11110000) {
+            unicode[0] = (utf8[index8] << 4) | ((utf8[index8 + 1] << 2) >> 4);
+            unicode[1] = ((utf8[index8 + 1] << 6) | ((utf8[index8 + 2] << 6);
+            index8 += 3;
+        }
+        else { 
+            unicode[0] = (utf8[index8] << 5) | ((utf8[index8 + 1] << 2) >> 3);
+            unicode[1] = ((utf8[index8 + 1] << 2) >> 1) | ((utf8[index8 + 2] << 2) >> 7);
+            unicode[3] = (utf8[index8 + 2] << 3;
+            index8 += 4;
+         }
+
+        index32 ++;
+    }
+
+    return length;
+}
+inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
+    Size length = utf8_length_from_unicode(utf32);
+    (*utf8) = new unsigned char[length + 1];
+    (*utf8)[length] = 0;
+    Index index8 = 0;
+    Index index32 = 0;
+    
+    while(utf32[index32]){
+        unsigned char* unicode = (unsigned char*)&utf32[index32];
+        unsigned char prefix = utf32[index32] < 0x0000007F ? 0b00000000 : (utf32[index32] < 0x000007FF ? 0b11000000 : (utf32[index32] < 0000 FFFF ? 0b11100000 :0b11110000));
+        switch (prefix) {
+        case 0b00000000: {// 0000 0000 - 0000 007F    0xxxxxxx
+            (*utf8)[index8] = unicode[0];
+            index8 += 1;
+            }break;
+        case 0b11000000: {// 0000 0080 - 0000 07FF    110xxxxx 10xxxxxx
+            (*utf8)[index8] = (unicode[0] >> 3) | 0b11000000;
+            (*utf8)[index8 + 1] = (unicode[0] << 3) | (unicode[1] >> 5) | 0b10000000;
+            index8 += 2;
+            }break;
+        case 0b11100000: {// 0000 0800 - 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
+            (*utf8)[index8] = (unicode[0] >> 4) | 0b11100000;
+            (*utf8)[index8 + 1] = ((unicode[0] << 4 ) >> 2) | (unicode[1] >> 6) | 0b10000000;
+            (*utf8)[index8 + 2] = ((unicode[2] << 2) >> 2) | 0b10000000;
+            index8 += 3;
+            }break;
+        case 0b11110000: {// 0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            (*utf8)[index8] = (unicode[0] >> 5) | 0b11110000;
+            (*utf8)[index8 + 1] = ((unicode[0] << 3) >> 2) | (unicode[1]) >> 7 | 0b10000000;
+            (*utf8)[index8 + 2] = ((unicode[2] << 1) >> 2) | 0b10000000;
+            (*utf8)[index8 + 3] = ((unicode[2] << 7) >> 3) | (unicode[3] >> 3) | 0b10000000;
+            index8 += 4;
+            }break;
+        default: {}break;
+        }
+
+        index32 += 1;
+    }
+
+}
+/*
 inline Size utf8_length_to_unicode(const unsigned char* content) {
     Index index = 0;
     Size length = 0;
     Error error = 0;
     while (content[index] && !error) {
-        unsigned char  prefix = 255;/*(content[index] & 0b11110000) < 0b11110000 ?
+        unsigned char  prefix = (content[index] & 0b11110000) < 0b11110000 ?
                                ((content[index] & 0b11100000) < 0b11100000 ?
-                               ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;*/
+                               ((content[index] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
         utf8_prefix(&content[index],prefix);
         switch (prefix) {
         case 0b00000000: { index += 1; }break;
@@ -121,9 +251,9 @@ inline Size utf_8_32(const unsigned char* utf8,Unicode** utf32){
     (*utf32)[length] = 0;
     Error error = 0;
     while(utf8[index8] && !error){
-        unsigned char prefix = 255;/* (utf8[index8] & 0b11110000) < 0b11110000 ?
+        unsigned char prefix = (utf8[index8] & 0b11110000) < 0b11110000 ?
                                ((utf8[index8] & 0b11100000) < 0b11100000 ?
-                               ((utf8[index8] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;*/
+                               ((utf8[index8] & 0b11000000) < 0b11000000 ? 0b00000000 : 0b11000000) : 0b11100000) : 0b11110000;
         utf8_prefix(&utf8[index8], prefix);
         Unicode u1 = 0,u2 = 0,u3 = 0,u4 = 0;
         switch(prefix){
@@ -201,7 +331,7 @@ inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
 
     return l;
 }
-
+*/ 
 #define UNICODE_SIZE sizeof(wchar_t)
 
 String::String(){
