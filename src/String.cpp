@@ -107,14 +107,14 @@ inline Size utf8_length_to_unicode(const unsigned char* content){
         Index segment = content[index] < 0x0000007F ? 1 : (content[index] < 0x000007FF ? 2 : (content[index] < 0x0000FFFF ? 3 : 4));
 
         switch (segment) {
-        case 1: { length += 1; }break;// 0000 0000 - 0000 007F    0xxxxxxx
-        case 2: { length += 2; }break;// 0000 0080 - 0000 07FF    110xxxxx 10xxxxxx
-        case 3: { length += 3; }break;// 0000 0800 - 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
-        case 4: { length += 4; }break;// 0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+        case 1: { index += 1; }break;// 0000 0000 - 0000 007F    0xxxxxxx
+        case 2: { index += 2; }break;// 0000 0080 - 0000 07FF    110xxxxx 10xxxxxx
+        case 3: { index += 3; }break;// 0000 0800 - 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
+        case 4: { index += 4; }break;// 0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
         default:break;
         }
 
-        index++;
+        length++;
     }
 
     return length;
