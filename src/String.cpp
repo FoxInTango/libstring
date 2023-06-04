@@ -119,6 +119,41 @@ inline Size utf8_length_to_unicode(const unsigned char* content){
 
     return length;
 }
+
+/** 编码规律
+    char     utf8[] = "这是一个悲伤的故事";
+    wchar_t utf32[] = L"这是一个悲伤的故事";
+    utf8_length((unsigned char*)utf8);
+    for(int i = 0;i < 9;i ++){
+        std::cout << " utf8  " << i << " : " << std::bitset<8>(utf8[i * 3]) << std::bitset<8>(utf8[i * 3 + 1]) << std::bitset<8>(utf8[i * 3 + 2]) << std::endl;
+        std::cout << " utf32 " << i << " : " << std::bitset<32>(utf32[i]) << std::endl;
+    }
+
+utf8  0 : 111010001011111110011001 
+utf32 0 : 00000000000000001000111111011001
+utf8  1 : 111001101001100010101111
+utf32 1 : 00000000000000000110011000101111
+utf8  2 : 111001001011100010000000
+utf32 2 : 00000000000000000100111000000000
+utf8  3 : 111001001011100010101010
+utf32 3 : 00000000000000000100111000101010
+utf8  4 : 111001101000001010110010
+utf32 4 : 00000000000000000110000010110010
+utf8  5 : 111001001011110010100100
+utf32 5 : 00000000000000000100111100100100
+utf8  6 : 111001111001101010000100
+utf32 6 : 00000000000000000111011010000100
+utf8  7 : 111001101001010110000101
+utf32 7 : 00000000000000000110010101000101
+utf8  8 : 111001001011101010001011
+utf32 8 : 00000000000000000100111010001011
+
+移位 -- 与字面直观表示相同
+    unsigned char m = 0b111110000;
+    std::cout << "原位:" << std::bitset<8>(m) << std::endl;
+    std::cout << "左移:" << std::bitset<8>(m << 1) << std::endl;
+    std::cout << "右移:" << std::bitset<8>(m >> 1) << std::endl;
+ */
 inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
     Index index8 = 0;
     Index index32 = 0;
@@ -134,20 +169,21 @@ inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
             unicode[0] =  utf8[index8];
             index8++;
         }
-        else if (utf8[index8] < 0b11100000) {
-            unicode[0] = (utf8[index8] << 3) | ((utf8[index8 + 1] << 2) >> 5);
-            unicode[1] = (utf8[index8 + 1] << 5);
+        else if (utf8[index8] < 0b11100000) { // 110xxxxx 10xxxxxx
+            unicode[0] = ((utf8[index8 + 1] << 2) >> 2) | (utf8[index8]<< 6);
+            unicode[1] = ((utf8[index8] << 3) >> 5);
             index8 += 2; 
         }
-        else if (utf8[index8] < 0b11110000) {
-            unicode[0] = (utf8[index8] << 4) | ((utf8[index8 + 1] << 2) >> 4);
-            unicode[1] = (utf8[index8 + 1] << 6) | (utf8[index8 + 2] << 6);
+        else if (utf8[index8] < 0b11110000) { // 1110xxxx 10xxxxxx 10xxxxxx
+            unicode[0] = ((utf8[index8 + 2] << 2) >> 2) | (utf8[index8 + 1] << 6);
+            unicode[1] = ((utf8[index8 + 1] << 2) >> 4) | (utf8[index8] << 6);
+            unicode[2] = ((utf8[index8] << 6) >> 6);
             index8 += 3;
         }
-        else {
-            unicode[0] = (utf8[index8] << 5) | ((utf8[index8 + 1] << 2) >> 3);
-            unicode[1] = ((utf8[index8 + 1] << 2) >> 1) | ((utf8[index8 + 2] << 2) >> 7);
-            unicode[3] = (utf8[index8 + 2] << 3);
+        else { // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            unicode[0] = ((utf8[index8 + 3] << 2) >> 2) | (utf8[index8 + 2] << 6);
+            unicode[1] = ((utf8[index8 + 2] << 2) >> 4) | (utf8[index8 + 1] << 4);
+            unicode[3] = ((utf8[index8 + 1] << 2) >> 6) | (utf8[0] << 5) >> 3);
             index8 += 4;
          }
 
