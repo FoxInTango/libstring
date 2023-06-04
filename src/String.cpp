@@ -167,23 +167,30 @@ inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
         unsigned char* unicode = (unsigned char*)&((*utf32)[index32]);
         if (utf8[index8] < 0b10000000) {
             unicode[0] =  utf8[index8];
+            unicode[1] = 0;
+            unicode[2] = 0;
+            unicode[3] = 0;
             index8++;
         }
         else if (utf8[index8] < 0b11100000) { // 110xxxxx 10xxxxxx
             unicode[0] = ((utf8[index8 + 1] << 2) >> 2) | (utf8[index8]<< 6);
             unicode[1] = ((utf8[index8] << 3) >> 5);
+            unicode[2] = 0;
+            unicode[3] = 0;
             index8 += 2; 
         }
         else if (utf8[index8] < 0b11110000) { // 1110xxxx 10xxxxxx 10xxxxxx
             unicode[0] = ((utf8[index8 + 2] << 2) >> 2) | (utf8[index8 + 1] << 6);
             unicode[1] = ((utf8[index8 + 1] << 2) >> 4) | (utf8[index8] << 6);
             unicode[2] = ((utf8[index8] << 6) >> 6);
+            unicode[3] = 0;
             index8 += 3;
         }
         else { // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
             unicode[0] = ((utf8[index8 + 3] << 2) >> 2) | (utf8[index8 + 2] << 6);
             unicode[1] = ((utf8[index8 + 2] << 2) >> 4) | (utf8[index8 + 1] << 4);
-            unicode[3] = ((utf8[index8 + 1] << 2) >> 6) | ((utf8[index8] << 5) >> 3);
+            unicode[2] = ((utf8[index8 + 1] << 2) >> 6) | ((utf8[index8] << 5) >> 3);
+            unicode[3] = 0;
             index8 += 4;
          }
 
