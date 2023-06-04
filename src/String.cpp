@@ -180,16 +180,16 @@ inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
             index8 += 2; 
         }
         else if (utf8[index8] < 0b11110000) { // 1110xxxx 10xxxxxx 10xxxxxx
-            unicode[0] = (utf8[index8 + 2] & 0b00111111) | (utf8[index8 + 1] << 6);
+            unicode[0] =  (utf8[index8 + 2] & 0b00111111) | (utf8[index8 + 1] << 6);
             unicode[1] = ((utf8[index8 + 1] & 0b00111111 ) >> 2) | (utf8[index8] << 4);
             unicode[2] = 0;
             unicode[3] = 0;
             index8 += 3;
         }
         else { // 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-            unicode[0] = ((utf8[index8 + 3] << 2) >> 2) | (utf8[index8 + 2] << 6);
-            unicode[1] = ((utf8[index8 + 2] << 2) >> 4) | (utf8[index8 + 1] << 4);
-            unicode[2] = ((utf8[index8 + 1] << 2) >> 6) | ((utf8[index8] << 5) >> 3);
+            unicode[0] =  (utf8[index8 + 3] & 0b00111111) | (utf8[index8 + 2] << 6);
+            unicode[1] = ((utf8[index8 + 2] & 0b00111111) >> 2) | (utf8[index8 + 1] << 4);
+            unicode[2] = ((utf8[index8 + 1] & 0b00111111) >> 4) | ((utf8[index8] & 0b00000111) << 2);
             unicode[3] = 0;
             index8 += 4;
          }
@@ -215,21 +215,21 @@ inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
             index8 += 1;
             }break;
         case 0b11000000: {// 0000 0080 - 0000 07FF    110xxxxx 10xxxxxx
-            (*utf8)[index8] = (unicode[0] >> 3) | 0b11000000;
-            (*utf8)[index8 + 1] = (unicode[0] << 3) | (unicode[1] >> 5) | 0b10000000;
+            (*utf8)[index8]     = (unicode[0] >> 6) | ((unicode[1] & 0b00000111) << 3) | 0b11000000;
+            (*utf8)[index8 + 1] = (unicode[0] & 0b00111111) | 0b10000000;
             index8 += 2;
             }break;
         case 0b11100000: {// 0000 0800 - 0000 FFFF    1110xxxx 10xxxxxx 10xxxxxx
-            (*utf8)[index8] = (unicode[0] >> 4) | 0b11100000;
-            (*utf8)[index8 + 1] = ((unicode[0] << 4 ) >> 2) | (unicode[1] >> 6) | 0b10000000;
-            (*utf8)[index8 + 2] = ((unicode[2] << 2) >> 2) | 0b10000000;
+            (*utf8)[index8]     =  (unicode[1] >> 4) | 0b11100000;
+            (*utf8)[index8 + 1] = ((unicode[0] & 0b11000000) >> 6) | ((unicode[1] & 0b00001111) << 2) | 0b10000000;
+            (*utf8)[index8 + 2] =  (unicode[0] & 0b00111111) | 0b10000000;
             index8 += 3;
             }break;
         case 0b11110000: {// 0001 0000 - 0010 FFFF    11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-            (*utf8)[index8] = (unicode[0] >> 5) | 0b11110000;
-            (*utf8)[index8 + 1] = ((unicode[0] << 3) >> 2) | (unicode[1]) >> 7 | 0b10000000;
-            (*utf8)[index8 + 2] = ((unicode[2] << 1) >> 2) | 0b10000000;
-            (*utf8)[index8 + 3] = ((unicode[2] << 7) >> 3) | (unicode[3] >> 3) | 0b10000000;
+            (*utf8)[index8] = ((unicode[1] & 0b00011100) >> 2) | 0b11110000;
+            (*utf8)[index8 + 1] = ((unicode[2] & 0b11110000) >> 4) | ((unicode[1] & 0b00000011) << 6) | 0b10000000;
+            (*utf8)[index8 + 2] = ((unicode[3] & 0b11000000) >> 6) | ((unicode[2] & 0b00001111) << 2) | 0b10000000;
+            (*utf8)[index8 + 3] =  (unicode[3] & 0b00111111)|0b10000000;
             index8 += 4;
             }break;
         default: {}break;
