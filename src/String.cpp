@@ -104,7 +104,7 @@ inline Size utf8_length_to_unicode(const unsigned char* content){
     Size  length = 0;
     while (content[index])
     {
-        Index segment = content[index] < 0b1100000 ? 1 : (content[index] < 0b11100000 ? 2 : (content[index] < 0b11110000 ? 3 : 4));
+        Index segment = content[index] < 0b11000000 ? 1 : (content[index] < 0b11100000 ? 2 : (content[index] < 0b11110000 ? 3 : 4));
 
         switch (segment) {
         case 1: { index += 1; }break;// 0000 0000 - 0000 007F    0xxxxxxx
