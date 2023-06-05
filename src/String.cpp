@@ -19,7 +19,7 @@ Size string_length(const T* s) {
     return l;
 }
 template <typename T>
-Size string_copy(const T* t,const T* s,const Size& length = 0){
+Size string_copy(T* const t,T* const s,const Size& length = 0){
     if(!t || !s) return 0;
     Index index = 0;
     Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
@@ -515,7 +515,7 @@ String& String::operator = (const String& string){
     return *this;
 }
 
-long long make_number(const Unicode* number,Size& length = 0){
+long long make_number(const Unicode* number,const Size& length = 0){
     NumberSystem ns = number_system_of_string(number,length);
     long long r;
     switch(ns){
