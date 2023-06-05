@@ -613,7 +613,7 @@ Size String::split(Array<String>& array,char* spliter,const int& max){
             String s;
             s.content = new Unicode[i - ls + 1 + 1];
             if(s.content){
-                string_copy(s.content,&content[ls + 1],i - ls);
+                string_copy<Unicode>(s.content,&content[ls + 1],i - ls);
                 s.mLength = i - ls + 1;
                 array.append(s);
             }
