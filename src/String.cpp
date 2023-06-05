@@ -25,6 +25,7 @@ Size string_copy(T* t,T* s,const Size& length = 0){
     Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
     while(index < l && s[index] != 0){
         t[index] = s[index];
+        index ++;
     }
     return 0;
 }
@@ -35,6 +36,7 @@ bool string_compare(T* t, T* s, const Size& length = 0){
     Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
     while(s[index] && t[index] && index < l){
         if(s[index] != t[index]) return false;
+        index ++;
     }
 
     return true;
@@ -421,7 +423,7 @@ String::~String() {
 }
 
 String::String(const String& string){
-    Size l = string.length();
+    Size l = string.length() + mLength;
     this->content = new Unicode[l + 1];
     if(this->content){
         string_copy<Unicode>(this->content,string.content);
@@ -453,6 +455,7 @@ String::operator unsigned int() { return 0; }
 String::operator float() { return 0; }
 String::operator long() { return 0; }
 String::operator double() { return 0; }
+String::operator char*(){return 0;}
 
 bool String::operator == (const char* bytes){
     Unicode* unicode;

@@ -50,6 +50,7 @@ public:
     operator float();
     operator long();
     operator double();
+    operator char*();
 
     bool operator ==(const char* bytes);
     bool operator ==(const String& string);
