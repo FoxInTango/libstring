@@ -147,7 +147,11 @@ utf8  7 : 111001101001010110000101
 utf32 7 : 00000000000000000110010101000101
 utf8  8 : 111001001011101010001011
 utf32 8 : 00000000000000000100111010001011
-
+for (int i = 0; i < s.length(); i++) {
+        std::cout << " utf8   " << i << " : " << std::bitset<8>(utf8[i * 3]) << std::bitset<8>(utf8[i * 3 + 1]) << std::bitset<8>(utf8[i * 3 + 2]) << std::endl;
+        std::cout << " utf32  " << i << " : " << std::bitset<32>(utf32[i]) << std::endl;
+        std::cout << " unicode" << i << " : " << std::bitset<32>(s.unicode()[i]) << std::endl;
+    }
 移位 -- 与字面直观表示相同
     unsigned char m = 0b111110000;
     std::cout << "原位:" << std::bitset<8>(m) << std::endl;
@@ -215,7 +219,7 @@ inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
             index8 += 1;
             }break;
         case 0b11000000: {// 0000 0080 - 0000 07FF    110xxxxx 10xxxxxx
-            (*utf8)[index8]     = (unicode[0] >> 6) | ((unicode[1] & 0b00000111) << 3) | 0b11000000;
+            (*utf8)[index8]     = (unicode[0] >> 6) | ((unicode[1] & 0b00000111) << 2) | 0b11000000;
             (*utf8)[index8 + 1] = (unicode[0] & 0b00111111) | 0b10000000;
             index8 += 2;
             }break;

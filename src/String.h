@@ -11,6 +11,15 @@ namespaceBegin(foxintango)
 
 typedef char32_t Unicode;
 
+/** Number System
+ * 
+ */
+typedef enum _NumberSystem{
+    NS_NULL
+}NumberSystem;
+
+/** Endian -- Little
+ */
 class foxintangoAPI String {
 protected:
     Size mLength;// 检查length赋值情况
@@ -62,7 +71,10 @@ public:
     Size split(Array<String>& array,char* spliter, const int& max);
 public:
     const Unicode* unicode() const;
-    Size length() const ;
+    Size length() const;
+    int endian() const;
+public:
+    NumberSystem numberSystem(char* number);
 };
 namespaceEnd
 #endif // !_EVENT_TARGET_H_
