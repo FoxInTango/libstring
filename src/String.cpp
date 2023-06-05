@@ -177,8 +177,8 @@ inline Size utf_8_32(const unsigned char* utf8, Unicode** utf32){
             index8++;
         }
         else if (utf8[index8] < 0b11100000) { // 110xxxxx 10xxxxxx
-            unicode[0] = ((utf8[index8 + 1] & 0b00111111) >> 2) | (utf8[index8]<< 6);
-            unicode[1] = ((utf8[index8] &0b00011111) >> 2);
+            unicode[0] = (utf8[index8 + 1] & 0b00111111) | (utf8[index8]<< 6);
+            unicode[1] = ((utf8[index8] & 0b00011100) >> 2);
             unicode[2] = 0;
             unicode[3] = 0;
             index8 += 2; 
