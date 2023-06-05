@@ -382,7 +382,7 @@ inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
 }
 */ 
 
-inline bool is_sci_number(Unicode* number,const Size& length){
+inline bool is_sci_number(const Unicode* number,const Size& length){
     if(number){
         Size l = length ? length : string_length<Unicode>(number);
         if(l){
@@ -397,7 +397,7 @@ inline bool is_sci_number(Unicode* number,const Size& length){
     return false;
 }
 
-inline bool is_float_number(Unicode* number,const Size& length){
+inline bool is_float_number(const Unicode* number,const Size& length){
     if (number) {
         Size l = length ? length : string_length<Unicode>(number);
         if (l) {
@@ -412,16 +412,16 @@ inline bool is_float_number(Unicode* number,const Size& length){
     return false;
 }
 
-inline Size& end_of_number(Unicode* number){
+inline Size end_of_number(const Unicode* number){
     Index index;
-    while(number[index] && number[index] >= '0' && number <= '9'){
+    while(number[index] && number[index] >= '0' && number[index] <= '9'){
         index ++;
     }
 
     return index - 1;
 }
 
-inline NumberSystem number_system_of_string(Unicode* number,const Size& length){
+inline NumberSystem number_system_of_string(const Unicode* number,const Size& length){
     if(!number) return NS_NULL;
     Size l = length ? length : string_length<Unicode>(number);
     if(number && l){
@@ -520,11 +520,6 @@ long long make_number(const Unicode* number,Size& length = 0){
     long long r;
     switch(ns){
     case NS_BIN:{
-        Index e = end_of_number(&number[2]);
-        Size  index = e;
-        while(l){
-            r += (number[l + 2] == '1') ? 
-        }
     }break;
     case NS_OCT:{}break;
     case NS_DEC:{}break;
