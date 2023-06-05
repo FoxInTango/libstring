@@ -10,7 +10,7 @@ using namespace foxintango;
  * 数值的科学计数法
  */
 template <typename T>
-Size string_length(T* s) {
+Size string_length(const T* s) {
     Size l = 0;
     while(s[l]){
         l ++;
@@ -19,7 +19,7 @@ Size string_length(T* s) {
     return l;
 }
 template <typename T>
-Size string_copy(T* t,T* s,const Size& length = 0){
+Size string_copy(const T* t,const T* s,const Size& length = 0){
     if(!t || !s) return 0;
     Index index = 0;
     Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
@@ -31,7 +31,7 @@ Size string_copy(T* t,T* s,const Size& length = 0){
 }
 
 template <typename T>
-bool string_compare(T* t, T* s, const Size& length = 0){
+bool string_compare(const T* t, const T* s, const Size& length = 0){
     Index index = 0;
     Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
     while(s[index] && t[index] && index < l){
