@@ -381,6 +381,77 @@ inline Size utf_32_8(const Unicode* utf32, unsigned char** utf8){
     return l;
 }
 */ 
+
+inline bool is_sci_number(Unicode* number,const Size& length){
+    if(number){
+        Size l = length ? length : string_length<Unicode>(number);
+        if(l){
+            Index index;
+            while(number[index]){
+                if(number[index] == 'e' || number[index] == 'E') return true;
+                index++;
+            }
+        }
+    }
+
+    return false;
+}
+
+inline bool is_float_number(Unicode* number,const Size& length){
+    if (number) {
+        Size l = length ? length : string_length<Unicode>(number);
+        if (l) {
+            Index index;
+            while (number[index]) {
+                if (number[index] == '.') return true;
+                index++;
+            }
+        }
+    }
+
+    return false;
+}
+
+inline Size& end_of_number(Unicode* number){
+    Index index;
+    while(number[index] && number[index] >= '0' && number <= '9'){
+        index ++;
+    }
+
+    return index - 1;
+}
+
+inline NumberSystem number_system_of_string(Unicode* number,const Size& length){
+    if(!number) return NS_NULL;
+    Size l = length ? length : string_length<Unicode>(number);
+    if(number && l){
+        switch(number[0]){
+        case '0':{
+            switch(number[1]){
+            case 'b':{return NS_BIN;}break;//二进制
+            case 'B':{return NS_BIN;}break;//二进制
+            case 'x':{return NS_HEX;}break;//十六进制
+            case 'X':{return NS_HEX;}break;//十六进制
+            default:{
+                if(number[2] >= '0' && number[2] <= '9'){ // 八进制
+                    return NS_OCT;
+                }
+            }break;
+            }
+        }break;
+        default:{
+            if(is_sci_number(number,length)){
+                return NS_SCI;
+            }else if(is_float_number(number,length)){
+                return NS_DEC;
+            }
+        }break;
+        }
+    }
+
+    return NS_NULL;
+}
+
 #define UNICODE_SIZE sizeof(wchar_t)
 
 String::String(){
@@ -442,6 +513,25 @@ String& String::operator = (const String& string){
     }
 
     return *this;
+}
+
+long long make_number(const Unicode* number,Size& length = 0){
+    NumberSystem ns = number_system_of_string(number,length);
+    long long r;
+    switch(ns){
+    case NS_BIN:{
+        Index e = end_of_number(&number[2]);
+        Size  index = e;
+        while(l){
+            r += (number[l + 2] == '1') ? 
+        }
+    }break;
+    case NS_OCT:{}break;
+    case NS_DEC:{}break;
+    case NS_HEX:{}break;
+    case NS_SCI:{}break;
+    default:break;
+    }
 }
 
 String::operator char(){ 

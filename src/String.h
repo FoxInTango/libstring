@@ -15,7 +15,12 @@ typedef char32_t Unicode;
  * 
  */
 typedef enum _NumberSystem{
-    NS_NULL
+    NS_NULL, // 非数值
+    NS_BIN,  // 二进制
+    NS_OCT,  // 八进制
+    NS_DEC,  // 十进制
+    NS_HEX,  // 十六进制
+    NS_SCI   // 科学计数法
 }NumberSystem;
 
 /** Endian -- Little
@@ -50,6 +55,7 @@ public:
     operator float();
     operator long();
     operator double();
+
     operator char*();
 
     bool operator ==(const char* bytes);
@@ -73,7 +79,6 @@ public:
 public:
     const Unicode* unicode() const;
     Size length() const;
-    int endian() const;
 public:
     NumberSystem numberSystem(char* number);
 };
