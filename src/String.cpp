@@ -546,7 +546,7 @@ bool String::operator == (const char* bytes){
     Unicode* unicode;
 
     utf_8_32((unsigned char*)bytes,&unicode);
-
+    // 内存泄露
     if(unicode){
         return string_compare<Unicode>(this->content,unicode);
     }
@@ -583,7 +583,7 @@ Size String::as(char** string) const {
 String& String::contact(const String& s){
     Size tl = this->length();
     Size sl = s.length();
-
+    // 内存泄露
     Unicode* unicode = new Unicode[tl + sl + 1];
 
     if(unicode){
