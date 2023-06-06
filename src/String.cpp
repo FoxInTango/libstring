@@ -540,7 +540,15 @@ String::operator unsigned int() { return 0; }
 String::operator float() { return 0; }
 String::operator long() { return 0; }
 String::operator double() { return 0; }
-String::operator char*(){return 0;}
+String::operator char*(){
+    if(this->content && this->mLength){
+        char* utf8 = 0;
+        this->as(&utf8);
+        return utf8;
+    }
+
+    return 0;
+}
 
 bool String::operator == (const char* bytes){
     Unicode* unicode;
