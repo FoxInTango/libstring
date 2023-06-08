@@ -26,6 +26,12 @@ typedef enum _NumberSystem{
 /** Endian -- Little
  */
 class foxintangoAPI String {
+public:
+    enum Encoding{UTF8,UTF16,UTF32};
+    class ASCII{};
+    class UTF8{};
+    class UTF16{};
+    class UTF32{};
 protected:
     Size mLength;// 检查length赋值情况
     Unicode* content;
