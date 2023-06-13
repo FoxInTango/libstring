@@ -76,6 +76,10 @@ public:
     bool operator ==(const float& v);
     bool operator ==(const long& v);
     bool operator ==(const double& v);
+
+    bool operator >(const String& v);
+    bool operator <(const String& v);
+
     String& operator +=(const String& s);
 
     Size as(char** string) const;
