@@ -1,50 +1,5 @@
 #include "String.h"
 using namespace foxintango;
-/**  UTF-8, a transformation format of ISO 10646
- * https://www.ietf.org/rfc/rfc3629.txt  
- */
-
-/**
- * 赋值运算符 与 拷贝运算符
- * 
- * 数值的科学计数法
- */
-template <typename T>
-Size string_length(const T* s) {
-    Size l = 0;
-    while(s[l]){
-        l ++;
-    }
-
-    return l;
-}
-template <typename T>
-Size string_copy(T* const t,T* const s,const Size& length = 0){
-    if(!t || !s) return 0;
-    Index index = 0;
-    Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
-    while(index < l && s[index] != 0){
-        t[index] = s[index];
-        index ++;
-    }
-    return 0;
-}
-
-template <typename T>
-bool string_compare(const T* t, const T* s, const Size& length = 0){
-    Index index = 0;
-    Size l = length > 0 ? length : UNSIGNED_LONG_MAX;
-    while(s[index] && t[index] && index < l){
-        if(s[index] != t[index]) return false;
-        index ++;
-    }
-
-    return true;
-}
-
-Size unicode_swap_endian(Unicode* unicode){
-    return 0;
-}
 
 /** UNICODE -- UTF8
  *  0000 0000-0000 007F    0xxxxxxx
