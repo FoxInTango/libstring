@@ -8,9 +8,6 @@
 #include <libcpp/libcpp.h>
 
 namespaceBegin(foxintango)
-
-typedef char32_t Unicode;
-
 /** Number System
  * 
  */
