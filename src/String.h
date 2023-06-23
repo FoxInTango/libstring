@@ -83,6 +83,7 @@ public:
 
     String& contact(const String& s);
     Size split(Array<String>& array,char* spliter, const int& max);
+    Error load(const char* path);
 public:
     const Unicode* unicode() const;
     Size length() const;
