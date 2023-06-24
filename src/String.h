@@ -62,6 +62,7 @@ public:
     operator char*();
 
     bool operator ==(const char* bytes);
+    bool operator ==(const Unicode* unicode);
     bool operator ==(const String& string);
 
     bool operator ==(const char& v);

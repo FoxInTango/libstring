@@ -520,6 +520,10 @@ bool String::operator == (const char* bytes){
     return r;
 }
 
+bool String::operator ==(const Unicode* unicode){
+    return string_compare<Unicode>(this->content, unicode);
+}
+
 bool String::operator == (const String& string) {
     return string_compare<Unicode>(content,string.content);
 }
