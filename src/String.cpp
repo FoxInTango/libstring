@@ -514,7 +514,7 @@ bool String::operator == (const char* bytes){
     
     if(unicode){
         r = string_compare<Unicode>(this->content,unicode);
-        delete unicode;
+        delete[] unicode;
     }
 
     return r;
