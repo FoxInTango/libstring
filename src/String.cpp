@@ -459,6 +459,7 @@ String::String(const String& string){
 }
 
 String& String::operator = (const String& string){
+    if(this->content) { delete this->content; this->content = 0; }
     Size l = string.length();
     this->content = new Unicode[l + 1];
     if (this->content) {
@@ -506,15 +507,17 @@ String::operator char*(){
 }
 
 bool String::operator == (const char* bytes){
-    Unicode* unicode;
+    bool r = false;
 
+    Unicode* unicode;
     utf_8_32((unsigned char*)bytes,&unicode);
-    // 内存泄露
+    
     if(unicode){
-        return string_compare<Unicode>(this->content,unicode);
+        r = string_compare<Unicode>(this->content,unicode);
+        delete unicode;
     }
 
-    return false;
+    return r;
 }
 
 bool String::operator == (const String& string) {
