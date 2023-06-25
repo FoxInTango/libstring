@@ -30,8 +30,8 @@ public:
     class UTF16{};
     class UTF32{};
 protected:
-    Size mLength;// 检查length赋值情况
-    Unicode* content;
+    Size m_ength;// 检查length赋值情况
+    Unicode* m_content;
 public:
     String();
     String(const char* string);
