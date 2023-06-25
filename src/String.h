@@ -30,7 +30,7 @@ public:
     class UTF16{};
     class UTF32{};
 protected:
-    Size m_ength;// 检查length赋值情况
+    Size m_length;// 检查length赋值情况
     Unicode* m_content;
 public:
     String();
