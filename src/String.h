@@ -78,6 +78,8 @@ public:
     bool operator >(const String& v);
     bool operator <(const String& v);
 
+    Unicode operator[](const Index& index);
+
     String& operator +=(const String& s);
 
     Size as(char** string) const;

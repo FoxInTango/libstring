@@ -449,7 +449,7 @@ String::~String() {
 }
 
 String::String(const String& string){
-    Size l = string.length() + mLength;
+    Size l = string.length() + m_length;
     this->m_content = new Unicode[l + 1];
     if(this->m_content){
         string_copy<Unicode>(this->m_content,string.m_content);
@@ -497,7 +497,7 @@ String::operator float() { return 0; }
 String::operator long() { return 0; }
 String::operator double() { return 0; }
 String::operator char*(){
-    if(this->m_content && this->m_Length){
+    if(this->m_content && this->m_length){
         char* utf8 = 0;
         this->as(&utf8);
         return utf8;
