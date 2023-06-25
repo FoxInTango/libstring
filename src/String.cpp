@@ -410,12 +410,12 @@ inline NumberSystem number_system_of_string(const Unicode* number,const Size& le
 #define UNICODE_SIZE sizeof(wchar_t)
 
 String::String(){
-    content = 0;
-    mLength = 0;
+    m_content = 0;
+    m_length = 0;
 }
 String::String(const char* string) {
-    this->content = 0;
-    this->mLength = utf_8_32((unsigned char*)string,&this->content);
+    this->m_content = 0;
+    this->m_length = utf_8_32((unsigned char*)string,&this->m_content);
 }
 String::String(const char& number) {
     
@@ -445,27 +445,27 @@ String::String(const double& number) {
     
 }
 String::~String() {
-    if(content) delete[] content;
+    if(m_content) delete[] m_content;
 }
 
 String::String(const String& string){
     Size l = string.length() + mLength;
-    this->content = new Unicode[l + 1];
-    if(this->content){
-        string_copy<Unicode>(this->content,string.content);
-        this->content[l] = 0;
-        this->mLength = l;
+    this->m_content = new Unicode[l + 1];
+    if(this->m_content){
+        string_copy<Unicode>(this->m_content,string.m_content);
+        this->m_content[l] = 0;
+        this->m_length = l;
     }
 }
 
 String& String::operator = (const String& string){
-    if(this->content) { delete this->content; this->content = 0; }
+    if(this->m_content) { delete this->m_content; this->m_content = 0; }
     Size l = string.length();
-    this->content = new Unicode[l + 1];
-    if (this->content) {
-        string_copy<Unicode>(this->content, string.content);
-        this->content[l] = 0;
-        this->mLength = l;
+    this->m_content = new Unicode[l + 1];
+    if (this->m_content) {
+        string_copy<Unicode>(this->m_content, string.m_content);
+        this->m_content[l] = 0;
+        this->m_length = l;
     }
 
     return *this;
@@ -497,7 +497,7 @@ String::operator float() { return 0; }
 String::operator long() { return 0; }
 String::operator double() { return 0; }
 String::operator char*(){
-    if(this->content && this->mLength){
+    if(this->m_content && this->m_Length){
         char* utf8 = 0;
         this->as(&utf8);
         return utf8;
@@ -513,7 +513,7 @@ bool String::operator == (const char* bytes){
     utf_8_32((unsigned char*)bytes,&unicode);
     
     if(unicode){
-        r = string_compare<Unicode>(this->content,unicode);
+        r = string_compare<Unicode>(this->m_content,unicode);
         delete[] unicode;
     }
 
@@ -521,32 +521,36 @@ bool String::operator == (const char* bytes){
 }
 
 bool String::operator ==(const Unicode* unicode){
-    return string_compare<Unicode>(this->content, unicode);
+    return string_compare<Unicode>(this->m_content, unicode);
 }
 
 bool String::operator == (const String& string) {
-    return string_compare<Unicode>(content,string.content);
+    return string_compare<Unicode>(m_content,string.m_content);
+}
+
+Unicode String::operator[](const Index& index){
+    return index < m_length ? this->m_content[index] : UINT32_MAX;
 }
 
 String& String::operator += (const String& s){
-    if(!this->content || !s.content) return *this;
+    if(!this->m_content || !s.m_content) return *this;
     Size l = this->length() + s.length();
     Unicode* unicode = new Unicode[l + 1];
     if(unicode){
         unicode[l] = 0;
 
-        string_copy<Unicode>(unicode,this->content);
-        string_copy<Unicode>(&unicode[this->length()],s.content);
+        string_copy<Unicode>(unicode,this->m_content);
+        string_copy<Unicode>(&unicode[this->length()],s.m_content);
 
-        delete[] this->content;
-        this->content = unicode;
-        this->mLength = l;
+        delete[] this->m_content;
+        this->m_content = unicode;
+        this->m_length = l;
     }
     return *this;
 }
 
 Size String::as(char** string) const {
-    return content ? utf_32_8(this->content, (unsigned char**)string) : 0;
+    return m_content ? utf_32_8(this->m_content, (unsigned char**)string) : 0;
 }
 
 
@@ -557,11 +561,11 @@ String& String::contact(const String& s){
     Unicode* unicode = new Unicode[tl + sl + 1];
 
     if(unicode){
-        string_copy<Unicode>(unicode, this->content);
-        string_copy<Unicode>(&unicode[this->length()], s.content);
-        delete[] this->content;
-        this->content = unicode;
-        this->mLength = tl + sl;
+        string_copy<Unicode>(unicode, this->m_content);
+        string_copy<Unicode>(&unicode[this->length()], s.m_content);
+        delete[] this->m_content;
+        this->m_content = unicode;
+        this->m_length = tl + sl;
     }
 
     return *this;
@@ -574,12 +578,12 @@ Size String::split(Array<String>& array,char* spliter,const int& max){
     Index i  = 0;
     Index ls = -1;
     while(c <= max && i + ws.length() < l){
-        if(string_compare<Unicode>(&content[i],ws.content,ws.length())){
+        if(string_compare<Unicode>(&m_content[i],ws.m_content,ws.length())){
             String s;
-            s.content = new Unicode[i - ls + 1 + 1];
-            if(s.content){
-                string_copy<Unicode>(s.content,&content[ls + 1],i - ls);
-                s.mLength = i - ls + 1;
+            s.m_content = new Unicode[i - ls + 1 + 1];
+            if(s.m_content){
+                string_copy<Unicode>(s.m_content,&m_content[ls + 1],i - ls);
+                s.m_length = i - ls + 1;
                 array.append(s);
             }
             ls = i;
@@ -589,8 +593,8 @@ Size String::split(Array<String>& array,char* spliter,const int& max){
     }
 }
 
-const Unicode* String::unicode() const { return this->content; }
+const Unicode* String::unicode() const { return this->m_content; }
 
 Size String::length() const { 
-    return mLength;
+    return m_length;
 }
