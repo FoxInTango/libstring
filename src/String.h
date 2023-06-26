@@ -20,20 +20,22 @@ typedef enum _NumberSystem{
     NS_SCI   // 科学计数法
 }NumberSystem;
 
+enum Encoding { UTF8, UTF16, UTF32 };
+class ASCII {};
+class UTF8 {};
+class UTF16 {};
+class UTF32 {};
+
 /** Endian -- Little
  */
 class foxintangoAPI String {
 public:
-    enum Encoding{UTF8,UTF16,UTF32};
-    class ASCII{};
-    class UTF8{};
-    class UTF16{};
-    class UTF32{};
 protected:
     Size m_length;// 检查length赋值情况
     Unicode* m_content;
 public:
     String();
+    String(const Unicode* unicode);
     String(const char* string);
     String(const char& number);
     String(const unsigned char& number);
@@ -60,6 +62,9 @@ public:
     operator double();
 
     operator char*();
+    operator UTF8();
+    operator UTF16();
+    operator UTF32();
 
     bool operator ==(const char* bytes);
     bool operator ==(const Unicode* unicode);
