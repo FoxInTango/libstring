@@ -85,6 +85,19 @@ public:
     bool operator >(const String& v);
     bool operator <(const String& v);
 
+    String operator +(const String& string);
+    String operator +(const Unicode* unicode);
+    String operator +(const char* string);
+    String operator +(const char& number);
+    String operator +(const unsigned char& number);
+    String operator +(const short& number);
+    String operator +(const unsigned short& number);
+    String operator +(const int& number);
+    String operator +(const unsigned int& number);
+    String operator +(const float& number);
+    String operator +(const long& number);
+    String operator +(const double& number);
+
     Unicode operator[](const Index& index);
 
     String& operator +=(const String& s);
