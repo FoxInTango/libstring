@@ -21,10 +21,10 @@ typedef enum _NumberSystem{
 }NumberSystem;
 
 enum Encoding { UTF8, UTF16, UTF32 };
-class ASCII {};
-class UTF8 {};
-class UTF16 {};
-class UTF32 {};
+class foxintangoAPI ASCII {};
+class foxintangoAPI UTF8 {};
+class foxintangoAPI UTF16 {};
+class foxintangoAPI UTF32 {};
 
 /** Endian -- Little
  */
@@ -62,9 +62,11 @@ public:
     operator double();
 
     operator char*();
+    /*
     operator UTF8();
     operator UTF16();
     operator UTF32();
+    */
 
     bool operator ==(const char* bytes);
     bool operator ==(const Unicode* unicode);
