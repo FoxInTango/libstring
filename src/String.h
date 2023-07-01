@@ -21,16 +21,29 @@ typedef enum _NumberSystem{
 }NumberSystem;
 
 enum Encoding { UTF8, UTF16, UTF32 };
-class foxintangoAPI ASCII {};
-class foxintangoAPI UTF8 {};
-class foxintangoAPI UTF16 {};
-class foxintangoAPI UTF32 {};
-
+class String;
+class foxintangoAPI UTF8 {
+friend class String;
+protected:
+    char* m_content;
+public:
+    UTF8();
+    UTF8(const char* urf8);
+    UTF8(const UTF8& utf8);
+    UTF8(const String& string);
+    ~UTF8();
+public:
+    UTF8& operator = (const UTF8& utf8);
+    UTF8& operator = (const String& string);
+public:
+    char* content();
+};
 /** Endian -- Little
  */
 class foxintangoAPI String {
 public:
 protected:
+    Endian m_endian;
     Size m_length;// 检查length赋值情况
     Unicode* m_content;
 public:
@@ -61,17 +74,13 @@ public:
     operator long();
     operator double();
 
+    /**
+     * should be deleted by user. 
+     */
     operator char*();
-    /*
-    operator UTF8();
-    operator UTF16();
-    operator UTF32();
-    */
-
     bool operator ==(const char* bytes);
     bool operator ==(const Unicode* unicode);
     bool operator ==(const String& string);
-
     bool operator ==(const char& v);
     bool operator ==(const unsigned char& v);
     bool operator ==(const short& v);
@@ -87,6 +96,7 @@ public:
 
     String operator +(const String& string);
     String operator +(const Unicode* unicode);
+    String operator +(const Unicode& unicode);
     String operator +(const char* string);
     String operator +(const char& number);
     String operator +(const unsigned char& number);
@@ -98,9 +108,21 @@ public:
     String operator +(const long& number);
     String operator +(const double& number);
 
-    Unicode operator[](const Index& index);
+    String& operator +=(const String& string);
+    String& operator +=(const Unicode* unicode);
+    String& operator +=(const Unicode& unicode);
+    String& operator +=(const char* string);
+    String& operator +=(const char& number);
+    String& operator +=(const unsigned char& number);
+    String& operator +=(const short& number);
+    String& operator +=(const unsigned short& number);
+    String& operator +=(const int& number);
+    String& operator +=(const unsigned int& number);
+    String& operator +=(const float& number);
+    String& operator +=(const long& number);
+    String& operator +=(const double& number);
 
-    String& operator +=(const String& s);
+    Unicode operator[](const Index& index);
 
     Size as(char** string) const;
 
@@ -110,6 +132,7 @@ public:
 public:
     const Unicode* unicode() const;
     Size length() const;
+    Endian endian() const;
 public:
     NumberSystem numberSystem(char* number);
 };
