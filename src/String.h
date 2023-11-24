@@ -38,13 +38,30 @@ public:
 public:
     char* content();
 };
+
+class foxintangoAPI UTF16 {
+    friend class String;
+protected:
+    char16_t* m_content;
+public:
+    UTF16();
+    UTF16(const char* urf16);
+    UTF16(const UTF8& utf16);
+    UTF16(const String& string);
+    ~UTF16();
+public:
+    UTF16& operator = (const UTF16& utf16);
+    UTF16& operator = (const String& string);
+public:
+    char16_t* content();
+};
 /** Endian -- Little
  */
 class foxintangoAPI String {
 public:
 protected:
-    Endian m_endian;
-    Size m_length;// 检查length赋值情况
+    Endian   m_endian;
+    Size     m_length;// 检查length赋值情况
     Unicode* m_content;
 public:
     String();
