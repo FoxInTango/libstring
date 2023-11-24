@@ -6,7 +6,9 @@
 #ifndef _STRING_H_foxintango
 #define _STRING_H_foxintango
 #include <libcpp/libcpp.h>
-
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
 namespaceBegin(foxintango)
 /** some thing funny.
  */
