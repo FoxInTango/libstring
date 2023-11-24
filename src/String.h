@@ -28,8 +28,8 @@ protected:
     char* m_content;
 public:
     UTF8();
-    UTF8(const char* urf8);
-    UTF8(const UTF8& utf8);
+    UTF8(const char*   urf8);
+    UTF8(const UTF8&   utf8);
     UTF8(const String& string);
     ~UTF8();
 public:
@@ -45,8 +45,8 @@ protected:
     char16_t* m_content;
 public:
     UTF16();
-    UTF16(const char* urf16);
-    UTF16(const UTF8& utf16);
+    UTF16(const char*   urf16);
+    UTF16(const UTF16&  utf16);
     UTF16(const String& string);
     ~UTF16();
 public:
