@@ -10,41 +10,6 @@
 #include <iostream>
 #include <stdlib.h>
 namespaceBegin(foxintango)
-/** some thing funny.
- */
-class C1 {
-public:
-    C1() {}
-    ~C1() {};
-public:
-    void print() {
-        printf("Here C1 printing.");
-        const char* name = __PRETTY_FUNCTION__;
-        printf("    __PRETTY_FUNCTION__:%s\n",name);
-    }
-};
-class C2 {
-public:
-    C2() {}
-    ~C2() {};
-public:
-    void print() {
-        printf("Here C2 printing.");
-        const char* name = __PRETTY_FUNCTION__;
-        printf("    __PRETTY_FUNCTION__:%s\n", name);
-    }
-};
-
-template <class T>
-class C :public T {
-public:
-    C() {
-        this->print();
-        const char* name = __PRETTY_FUNCTION__;
-        printf("    __PRETTY_FUNCTION__:%s\n", name);
-    }
-    ~C() {}
-};
 /** Number System
  * 
  */
