@@ -571,7 +571,7 @@ String& String::contact(const String& s){
     return *this;
 }
 
-Size String::split(Array<String>& array,char* spliter,const int& max){
+Size String::split(std::vector<String>& array,char* spliter,const int& max){
     String ws(spliter);
     Size l   = this->length();
     Index c  = 0;
@@ -584,7 +584,7 @@ Size String::split(Array<String>& array,char* spliter,const int& max){
             if(s.m_content){
                 string_copy<Unicode>(s.m_content,&m_content[ls + 1],i - ls);
                 s.m_length = i - ls + 1;
-                array.append(s);
+                array.push_back(s);
             }
             ls = i;
             c ++;

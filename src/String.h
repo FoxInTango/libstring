@@ -6,6 +6,7 @@
 #ifndef _STRING_H_foxintango
 #define _STRING_H_foxintango
 #include <libcpp/libcpp.h>
+#include <vector>
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>
@@ -146,7 +147,7 @@ public:
     Size as(char** string) const;
 
     String& contact(const String& s);
-    Size split(Array<String>& array,char* spliter, const int& max);
+    Size split(std::vector<String>& array,char* spliter, const int& max);
     Error load(const char* path);
 public:
     const Unicode* unicode() const;
